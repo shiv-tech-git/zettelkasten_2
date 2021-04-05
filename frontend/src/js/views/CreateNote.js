@@ -1,4 +1,5 @@
 import AbstractView from "./AbstractView.js";
+import { http_post_form, http_post_json, http_get } from '../utils/request.js'
 
 export class CreateNote extends AbstractView {
   constructor(params) {
@@ -7,23 +8,16 @@ export class CreateNote extends AbstractView {
   }
 
   async getHtml() {
-      // return `
-      //   <h2 class="text-center">Create note</h2>
-      //   <form id="create-note-form" action="http://localhost:3000/create" method="post"><br>
-      //     <input required size="100" name="title" type="text" class="" placeholder="Title"><br>
-      //     <textarea cols="100" name="note" class="" placeholder="Note..." id="exampleFormControlTextarea1" rows="10"></textarea><br>
-      //     <input size="100" name="tags" type="text" class="" placeholder="Tags"><br>
-      //     <input size="100" name="links" type="text" class="" placeholder="Links"><br>
-      //     <input type="submit" value="Submit">
-      //     <a href="" id="submit-btn" class="">Create</a>
-      //   </form>
-      // `;
-      return  `
-        <form method="POST" action="/submit-form">
-        <input type="text" name="username" />
-        <input type="submit" />
+      return `
+        <h2 class="text-center">Create note</h2>
+        <form id="create-note-form"><br>
+          <input pattern="[A-Za-z]{3}" required size="100" name="title" type="text" class="" placeholder="Title"><br>
+          <textarea required cols="100" name="note" class="" placeholder="Note..." id="exampleFormControlTextarea1" rows="10"></textarea><br>
+          <input required size="100" name="tags" type="text" class="" placeholder="Tags"><br>
+          <input required size="100" name="links" type="text" class="" placeholder="Links"><br>
+          <input required id="submit-btn" type="submit" value="Submit">
         </form>
-      `
+      `;
   }
 
   async routine() {
@@ -31,48 +25,7 @@ export class CreateNote extends AbstractView {
   }
 
   static submit_form(e) {
-
-    
     e.preventDefault()
-    console.log("submit")
-    let form = document.getElementById('create-note-form')
-    let data = new FormData(form);
-    // CreateNote.sendData(data)
+    http_post_form('create-note-form', '/create', (o) => {console.log(o)})
   }
-
-  static sendData( formData ) {
-    console.log("sending data")
-    const XHR = new XMLHttpRequest()
-    
-    // Define what happens on successful data submission
-    XHR.addEventListener( 'load', function( event ) {
-        
-    } );
-  
-    // Define what happens in case of error
-    XHR.addEventListener(' error', function( event ) {
-    } );
-    
-    XHR.onreadystatechange = function() {
-        if (XHR.readyState == XMLHttpRequest.DONE) {
-            if(XHR.status == 200){
-                let obj = JSON.parse(XHR.responseText)
-                console.log(typeof obj);
-                console.log(obj);
-            }else{
-                console.log('Error: ' + XHR.statusText )
-            }
-        }
-    }
-    // Set up our request
-    XHR.open( 'POST', '/create' );
-    XHR.setRequestHeader( 'Content-Type', 'application/json' );
-  
-    // Send our FormData object; HTTP headers are set automatically
-    let body = {};
-    formData.forEach((value, key) => body[key] = value);
-    XHR.send( JSON.stringify(body) );
-  }
-
-
 }

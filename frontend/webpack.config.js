@@ -16,5 +16,6 @@ module.exports = {
       template: './src/index.html'
     }),
     new CleanWebpackPlugin()
-  ]
+  ],
+  watch: true,
 }
