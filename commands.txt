@@ -1,0 +1,35 @@
+npm init
+npm install -D webpack webpack-cli webpack-dev-server
+
+
+create file webpack.config.js
+
+  const path = require('path')
+  const HTMLPlugin = require('html-webpack-plugin')
+  const { CleanWebpackPlugin } = require('clean-webpack-plugin')
+
+  module.exports = {
+    entry: './src/js/index.js',
+    output: {
+      filename: 'bundle.[chunkhash].js',
+      path: path.resolve(__dirname, 'public')
+    },
+    devServer: {
+      port: 3000
+    },
+    plugins: [
+      new HTMLPlugin({
+        template: './src/index.html'
+      }),
+      new CleanWebpackPlugin()
+    ]
+  }
+
+npm install -D html-webpack-plugin
+npm i -D clean-webpack-plugin
+
+add srripts to package.json
+  "scripts": {
+    "start": "webpack serve --mode development --open",
+    "build": "webpack --mode production"
+  },
