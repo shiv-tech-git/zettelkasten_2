@@ -18,32 +18,33 @@ export class CreateNote extends AbstractView {
         </div>
           <textarea cols="100" name="body" id="body" placeholder="Note..." id="exampleFormControlTextarea1" rows="10"></textarea><br>
         <div class="autocomplete">
-          <input size="100" name="tags" id="tags" type="text" class="" placeholder="Tags"><br>
+          <input size="100" name="tags" id="tags" type="text" class="" placeholder="Tags">
+          <button id="create-tag-btn">Create tag</button>
         </div>
+        <div class="autocomplete">
           <input size="100" name="links" id="links" type="text" class="" placeholder="Links"><br>
           <button id="submit-btn">Create Note</button>
+        </div>
         </form>
       `;
   }
 
-  async routine() {
-    let arr_titles = [
-      'note1',
-      'note3',
-      'note3',
-      'note4',
-      'note5',
-    ];
-    let arr_tabs = [
-      'tag1',
-      'tag3',
-      'tag3',
-      'tag4',
-      'tag5',
-    ];
+  routine() {
     document.getElementById("submit-btn").addEventListener("click", CreateNote.submit_form)
-    let autocomplite_title = new Autocomplete(document.getElementById("title"), arr_titles);
-    let autocomplite_tags = new Autocomplete(document.getElementById("tags"), arr_tabs);
+    document.getElementById("create-tag-btn").addEventListener("click", CreateNote.createTag)
+
+    http_get('/fetch-all-tags', (res) => {
+      let arr = Array();
+      res.forEach(element => { arr.push(element.tag)});
+      let autocomplite_title = new Autocomplete(document.getElementById("tags"), arr);
+    })
+
+    http_get('/fetch-all-titles', (res) => {
+      let arr = Array();
+      res.forEach(element => { arr.push(element.title)});
+      console.log(arr)
+      let autocomplite_title = new Autocomplete(document.getElementById("links"), arr);
+    })
   }
 
   static submit_form(e) {
@@ -51,7 +52,7 @@ export class CreateNote extends AbstractView {
 
     if (!CreateNote.validateForm()) return;
 
-    http_post_form('create-note-form', '/create', (message) => {
+    http_post_form('create-note-form', '/create_note', (message) => {
       document.querySelector("#error_message").innerHTML = "Note has been saved.";
       console.log("sucsees create: " + message)
     })
@@ -78,6 +79,28 @@ export class CreateNote extends AbstractView {
     const tags = document.getElementById('tags').value.trim();
     if (tags === '') {
       error += "Tags field can't be blank <br>"
+    }
+
+    if (error === "") {
+      document.querySelector("#error_message").innerHTML = "Sending...";
+      return true
+    } else {
+      document.querySelector("#error_message").innerHTML = error;
+    }
+  }
+
+  static createTag(e) {
+    e.preventDefault()
+    let mess = { tag: document.querySelector("#tags").value }
+    http_post_json(mess, '/create_tag', (msg) => {console.log("Tag creating status: ", msg); location.reload();})
+  }
+
+  static validateTag(tag){
+    let error = "";
+
+    const title = document.getElementById('title').value.trim();
+    if (title === '') {
+      error += "Title can't be blank <br>"
     }
 
     if (error === "") {

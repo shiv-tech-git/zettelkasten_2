@@ -1,4 +1,6 @@
 import AbstractView from "./AbstractView.js";
+import { Router } from "../utils/router.js";
+import { Renderer } from "../utils/renderer.js"
 import { http_post_form, http_post_json, http_get } from '../utils/request.js'
 
 export class ShowAll extends AbstractView {
@@ -9,41 +11,33 @@ export class ShowAll extends AbstractView {
 
   async getHtml() {
     http_get('/fetch-all-notes', this.showAll);
-      return `
-          <h1>All of the notes</h1>
-      `;
+      return ``;
   }
 
-  showAll(data){
-    console.log(data)
-    let html = '<div id="note_list">';
+  routine() {
 
-    data.reverse().forEach(element => {
-      html += "<div><br>"
-      html += element.id + "   "
-      html += element.title + "<br>"
-      html += element.body + "<br>"
-      html += `<button id='${element.id}' name='edit-note-btn'>Edit</button>`
-      html += `<button id='${element.id}' name='delete-note-btn'>Delete</button>`
-      html += "</div>"
-    });
-    document.querySelector("#app").innerHTML = html;
+  }
+
+  showAll(note_head){
+    Renderer.renderNoteHead(note_head)
     document.querySelector('#note_list').addEventListener('click', ShowAll.buttonHandler)
   }
 
-  static editNote(note_id) {
-    console.log("edit " + note_id)
-  }
-
-  static deleteNote(note_id) {
-    console.log("delete " + note_id)
-  }
-
   static buttonHandler(event) {
-    if (event.srcElement.name === "edit-note-btn") {
-      ShowAll.editNote(event.srcElement.id)
+    if (event.srcElement.name === "open-note-btn") {
+      ShowAll.openNote(event.srcElement.id)
     } else if (event.srcElement.name === "delete-note-btn") {
       ShowAll.deleteNote(event.srcElement.id)
     }
   }
+
+  static openNote(note_id) {
+    Router.navigateTo(`/view-note/${note_id}`);
+  }
+
+  static deleteNote(note_id) {
+    console.log("delete " + note_id)
+    http_post_json({ id: note_id }, "/delete-note-by-id", (msg) => {console.log(msg); location.reload();})
+  }
+
 }

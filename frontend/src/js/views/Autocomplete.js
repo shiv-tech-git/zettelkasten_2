@@ -10,7 +10,7 @@ export class Autocomplete extends AbstractView {
         this.setTitle("Autocomplete");
     }
 
-    async routine(){
+    routine(){
       autocomplete(document.getElementById("myInput"), countries);
     }
 

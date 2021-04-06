@@ -1,23 +1,20 @@
 const mysql = require('mysql');
 
-// mysql_config = {
-//   host     : 'localhost',
-//   user     : 'zettelkasten',
-//   password : 'zettelkasten',
-//   database : 'zettelkasten',
-// }
-
 mysql_config = {
   host     : 'localhost',
-  user     : 'zkuser',
-  password : 'zkpass',
+  user     : 'zettelkasten',
+  password : 'zettelkasten',
   database : 'zettelkasten',
 }
 
+// mysql_config = {
+//   host     : 'localhost',
+//   user     : 'zkuser',
+//   password : 'zkpass',
+//   database : 'zettelkasten',
+// }
+
 class DbHandler {
-  
-
-
 
   static establish_connection() {
     DbHandler.connection = mysql.createConnection(mysql_config);
@@ -41,9 +38,34 @@ class DbHandler {
   }
 
   static createNote( note ) {
-      let timestamp = Date.now();
-      return DbHandler.dbQuery(`insert into notes(title, body, tags, links, creation_timestamp) 
-      values('${note.title}', '${note.body}', '${note.tags}', '${note.links}', FROM_UNIXTIME('${timestamp}'))`)
+      let timestamp = Date.now()/1000;
+      return DbHandler.dbQuery(`insert into notes(title, body, tags, links, creating_timestamp) 
+      values('${note.title}', '${note.body}', '${note.tags}', '${note.links}', '${timestamp}')`)
+  }
+
+  static createTag(tag) {
+    return DbHandler.dbQuery(`insert into tags(tag) values('${tag.tag}')`)
+  }
+
+  static fetchAllTags() {
+    return DbHandler.dbQuery('SELECT * FROM tags')
+  }
+
+  static fetchAllTitles() {
+    return DbHandler.dbQuery('SELECT title FROM notes')
+  }
+
+  static fetchNoteById(id) {
+    return DbHandler.dbQuery(`SELECT * FROM notes WHERE id = ${id.id}`)
+  }
+
+  static deleteNoteById(id) {
+    return DbHandler.dbQuery(`DELETE FROM notes WHERE id = ${id.id}`)
+  }
+
+  static editNoteById(note) {
+    let timestamp = Date.now()/1000;
+    return DbHandler.dbQuery(`UPDATE notes SET title='${note.title}', body='${note.body}', tags='${note.tags}', links='${note.links}', updating_timestamp='${timestamp}' WHERE id=${note.id}`)
   }
 
 }

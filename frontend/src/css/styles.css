@@ -44,6 +44,7 @@ body {
   /*the container must be positioned relative:*/
   position: relative;
   display: inline-block;
+  padding: 10px 0px;
 }
 input {
   border: 1px solid transparent;
