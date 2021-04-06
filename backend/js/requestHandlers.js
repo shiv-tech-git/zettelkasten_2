@@ -11,5 +11,5 @@ function fetchNotes() {
 }
 
 function createNote( note ) {
-  mysqlHandler.createNote( note )  
+  return mysqlHandler.createNote( note )  
 }

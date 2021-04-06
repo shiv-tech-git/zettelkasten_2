@@ -1,6 +1,7 @@
 import Dashboard from "./views/Dashboard.js";
-import ShowAll from "./views/ShowAll.js";
+import { ShowAll } from "./views/ShowAll.js";
 import { CreateNote } from "./views/CreateNote.js";
+import { Autocomplete } from "./views/Autocomplete.js";
 import PostView from "./views/PostView.js";
 
 
@@ -28,6 +29,7 @@ const router = async () => {
         { path: "/", view: Dashboard },
         { path: "/show_all", view: ShowAll },
         { path: "/create_note", view: CreateNote },
+        { path: "/autocomplete", view: Autocomplete },
         { path: "/posts/:id", view: PostView },
     ];
 

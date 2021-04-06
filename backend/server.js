@@ -22,21 +22,32 @@ app.use(express.urlencoded())
 
 // ============REQUESTS================
 app.post('/create', (req, res) => {
-  createNote(req.body)
+  createNote(req.body).then(() => {
+    res.json({mesage: 'success'})
+  })
+  
 })
-app.get("/all", (req, res) => {
+app.get("/fetch-all-notes", (req, res) => {
   fetchNotes().then(data => {
-    console.log(data)
     res.json(data);
   })
 })
+app.get("/fetch-all-heads", (req, res) => {
+  // fetchNotes().then(data => {
+  //   res.json(data);
+  // })
+})
+app.get("/fetch-all-tags", (req, res) => {
+  // fetchNotes().then(data => {
+  //   res.json(data);
+  // })
+})
+
+
 app.get("/*", (req, res) => {
     res.sendFile(path.resolve(__dirname, "../frontend/public", "index.html"))
 })
-app.post('/create', function (req, res) {
-    console.log(req.body)
-    createNote(req.body);
-  })
+
 // ============REQUESTS================
 
 
