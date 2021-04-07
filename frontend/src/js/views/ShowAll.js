@@ -19,7 +19,7 @@ export class ShowAll extends AbstractView {
   }
 
   showAll(note_head){
-    Renderer.renderNoteHead(note_head)
+    Renderer.renderNoteHeads(note_head)
     document.querySelector('#note_list').addEventListener('click', ShowAll.buttonHandler)
   }
 

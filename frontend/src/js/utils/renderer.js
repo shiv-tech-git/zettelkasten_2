@@ -1,3 +1,8 @@
+import { http_post_form, http_post_json, http_get } from '../utils/request.js'
+import { Autocomplete } from "../utils/autocomplete.js";
+import { fromDbColumnFormat } from './tools.js';
+import { Router } from './router.js';
+
 export class Renderer {
 
   static setAppHtml(html) {
@@ -8,20 +13,46 @@ export class Renderer {
 
     let date = new Date(note.creating_timestamp*1000)
 
+    let links = generateButtonsFromDbFormat(note.links, "link_button")
+    let tags = generateButtonsFromDbFormat(note.tags, "tag_button")
+
     let html = `
-    Note ${note.id}:  ${note.title}<br>
-    ====================<br>
-    ${note.body}<br>
-    creation date: ${date}<br>
-    tags: ${note.tags}<br>
-    links: ${note.links}<br>
-    <button id='${note.id}' name='edit-note-btn'>Edit</button>
+    <div class="note_view">
+      Note ${note.id}:  ${note.title}<br>
+      ====================<br>
+      <div class="note_body">
+        ${note.body}<br>
+      </div>
+        creation date: ${date}<br>
+        tags: ${tags}<br>
+        links: ${links}<br>
+    </div>
+    <div class="button_section">
+      <button id='${note.id}' name='edit-note-btn'>Edit</button>
+      <button id='${note.id}:${note.title}' name='create-linked-note-btn'>Create linked note</button>
+    </div>
     `;
 
     Renderer.setAppHtml(html);
+
+    document.querySelectorAll('.note_view')[0].addEventListener('click', (e) => {
+        if(e.target.className == "link_button"){
+          Router.navigateTo(`/view-note/${e.target.dataset.button_id}`)
+        }
+      })
+
+    function generateButtonsFromDbFormat(db_elements, class_name) {
+      let button_html = ''
+      fromDbColumnFormat(db_elements).forEach((element) => {
+        button_html += `
+        <button class='${class_name}' data-button_id="${element.id}">${element.value}</button>
+        `
+      })
+      return button_html
+    }
   }
 
-  static renderNoteHead(note) {
+  static renderNoteHeads(note) {
     let html = '<div id="note_list">';
 
     note.reverse().forEach(element => {
@@ -31,54 +62,9 @@ export class Renderer {
       html += `<button id='${element.id}' name='delete-note-btn'>Delete</button>`
       html += "</div>"
     });
+
+    html += '</div>';
     Renderer.setAppHtml(html);
   }
 
-  static renderNoteForm(note, mode) {
-    let title
-    let button_name
-    let note_title = ""
-    let note_body = ""
-    let note_tags = ""
-    let note_links = ""
-    let note_id = ""
-
-    switch(mode) {
-      case "create_mode":
-        title = "Create note"
-        button_name = "Create"
-        break;
-      case "edit_mode":
-        title = "Edit note"
-        button_name = "Save"
-        note_title = note.title
-        note_body = note.body
-        note_tags = note.tags
-        note_links = note.links
-        note_id = note.id
-        break;
-    }
-    console.log(note.body)
-    let html = `
-    <h2 class="text-center">${title}</h2>
-    <div id="error_message"></div>
-    <form autocomplete="off"  id="note-form"><br>
-      <div hidden id="${note.id}" name="note_id"></div>
-      <div class="autocomplete">
-        <input size="100" name="title" id="title" type="text" class="" placeholder="Title" value="${note.title}"><br>
-      </div>
-        <textarea cols="100" name="body" id="body" placeholder="Note..." id="exampleFormControlTextarea1" rows="10">${note.body}</textarea><br>
-      <div class="autocomplete">
-        <input size="100" name="tags" id="tags" type="text" class="" placeholder="Tags" value="${note.title}">
-        <button id="create-tag-btn">Create tag</button>
-      </div>
-      <div class="autocomplete">
-        <input size="100" name="links" id="links" type="text" class="" placeholder="Links"value="${note.links}"><br>
-        <button id="submit-btn">${button_name}</button>
-      </div>
-    </form>   
-    `
-
-    Renderer.setAppHtml(html);
-  }
 }

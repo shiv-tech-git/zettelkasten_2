@@ -77,13 +77,13 @@ app.get("/fetch-all-tags", (req, res) => {
   })
 })
 
-
+// app.get("/view-note/*", (req, res) => {
+//   res.sendFile(path.resolve(__dirname, "../frontend/public", "index.html"))
+// })
 app.get("/*", (req, res) => {
   res.sendFile(path.resolve(__dirname, "../frontend/public", "index.html"))
 })
-app.get("/note/*", (req, res) => {
-  res.sendFile(path.resolve(__dirname, "../frontend/public", "index.html"))
-})
+
 
 // ============REQUESTS================
 

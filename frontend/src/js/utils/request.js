@@ -10,11 +10,23 @@ function http_get(url, callback_success) {
 }
 
 function http_post_form(form_id, url, callback_success, callback_error = () => {}){
-  let form = document.getElementById(form_id)
-  let form_data = new FormData(form);
-  let form_object = {};
-  form_data.forEach((value, key) => form_object[key] = value);
-  http_post_json(form_object, url, callback_success, callback_error)
+
+  let form = document.getElementById('note-form')
+
+  let post_form = {
+    title: form.querySelectorAll('#title')[0].value,
+    body: form.querySelectorAll('#body')[0].value,
+    tags: form.querySelectorAll('#tags')[0].value,
+    links: form.querySelectorAll('#links')[0].value,
+  }
+  
+  http_post_json(post_form, url, callback_success)
+
+  // let form = document.getElementById(form_id)
+  // let form_data = new FormData(form);
+  // let form_object = {};
+  // form_data.forEach((value, key) => form_object[key] = value);
+  // http_post_json(form_object, url, callback_success, callback_error)
 }
 
 function http_post_json(object, url, callback_success, callback_error) {

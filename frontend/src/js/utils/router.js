@@ -1,16 +1,14 @@
-import Dashboard from "../views/Dashboard.js";
+import { Home } from "../views/Home.js";
 import { ShowAll } from "../views/ShowAll.js";
 import { CreateNote } from "../views/CreateNote.js";
-import { Autocomplete } from "../views/Autocomplete.js";
 import { NoteView } from "../views/NoteView.js";
 
 const pathToRegex = path => new RegExp("^" + path.replace(/\//g, "\\/").replace(/:\w+/g, "(.+)") + "$")
 
 const routes = [
-  { path: "/", view: Dashboard },
+  { path: "/", view: Home },
   { path: "/show_all", view: ShowAll },
   { path: "/create_note", view: CreateNote },
-  { path: "/autocomplete", view: Autocomplete },
   { path: "/view-note/:id", view: NoteView },
 ];
 

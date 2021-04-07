@@ -7,13 +7,6 @@ mysql_config = {
   database : 'zettelkasten',
 }
 
-// mysql_config = {
-//   host     : 'localhost',
-//   user     : 'zkuser',
-//   password : 'zkpass',
-//   database : 'zettelkasten',
-// }
-
 class DbHandler {
 
   static establish_connection() {
@@ -38,9 +31,10 @@ class DbHandler {
   }
 
   static createNote( note ) {
-      let timestamp = Date.now()/1000;
-      return DbHandler.dbQuery(`insert into notes(title, body, tags, links, creating_timestamp) 
-      values('${note.title}', '${note.body}', '${note.tags}', '${note.links}', '${timestamp}')`)
+    console.log("create note", note)
+      let timestamp = Math.floor(Date.now()/1000);
+      return DbHandler.dbQuery(`insert into notes(title, body, tags, links, creating_timestamp, updating_timestamp) 
+      values('${note.title}', '${note.body}', '${note.tags}', '${note.links}', '${timestamp}', '${timestamp}')`)
   }
 
   static createTag(tag) {
@@ -48,11 +42,11 @@ class DbHandler {
   }
 
   static fetchAllTags() {
-    return DbHandler.dbQuery('SELECT * FROM tags')
+    return DbHandler.dbQuery('SELECT id, tag FROM tags')
   }
 
   static fetchAllTitles() {
-    return DbHandler.dbQuery('SELECT title FROM notes')
+    return DbHandler.dbQuery('SELECT id, title FROM notes')
   }
 
   static fetchNoteById(id) {
@@ -64,7 +58,7 @@ class DbHandler {
   }
 
   static editNoteById(note) {
-    let timestamp = Date.now()/1000;
+    let timestamp = Math.floor(Date.now()/1000);
     return DbHandler.dbQuery(`UPDATE notes SET title='${note.title}', body='${note.body}', tags='${note.tags}', links='${note.links}', updating_timestamp='${timestamp}' WHERE id=${note.id}`)
   }
 
